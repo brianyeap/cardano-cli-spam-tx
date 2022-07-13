@@ -8,7 +8,7 @@ import json
 # Path to the cardano-cli binary or use the global one
 CARDANO_CLI_PATH = "cardano-cli"
 
-# BLOCK_FROST (Set Permanent virtualenv EG: nano ~/.zshrc, source ~/.zshrc)
+# BLOCK_FROST (Set Permanent virtualenv variable EG: nano ~/.zshrc, source ~/.zshrc)
 PROJECT_ID = os.environ.get('BLOCKFROST_PROJECT_ID')
 
 SEND_ADA_AMOUNT = 1

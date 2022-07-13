@@ -21,6 +21,12 @@ make a directory called wallet and cd into it and create the keys \
 Create a directory called txs \
 ``mkdir txs``
 
+## Set up blockfrost API
+Sign up on blockfrost and create API key (project ID) \
+replace ``os.environ.get('BLOCKFROST_PROJECT_ID')`` with the project id \
+\
+or you can set up virtual env variable and put the project id in "BLOCKFROST_PROJECT_ID" variable
+
 ## Fund wallet
 Send ada to the payment.addr that you generated in multiple transactions to create multiple utxos
 
