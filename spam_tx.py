@@ -4,6 +4,7 @@ import random
 import threading
 import requests
 import json
+import psutil
 
 # Path to the cardano-cli binary or use the global one
 CARDANO_CLI_PATH = "cardano-cli"
@@ -11,8 +12,8 @@ CARDANO_CLI_PATH = "cardano-cli"
 # BLOCK_FROST (Set Permanent virtualenv variable EG: nano ~/.zshrc, source ~/.zshrc)
 PROJECT_ID = os.environ.get('BLOCKFROST_PROJECT_ID')
 
-SEND_ADA_AMOUNT = 1
-SEND_TX_AMOUNT = 5
+SEND_ADA_AMOUNT = 3
+SEND_TX_AMOUNT = 100
 ESTIMATED_ADA_FEE = 0.2
 VALID_UTXOS_ARRAY = []
 
@@ -21,12 +22,33 @@ PaymentAddress = open('wallet/payment.addr').read()
 ReceiverAddress = open('wallet/receiver.addr').read()
 
 
+def GET_NODE_SOCKET_PATH():
+    pids = psutil.pids()
+    for pid in pids:
+        if psutil.pid_exists(pid):
+            process = psutil.Process(pid)
+            if "cardano-wallet" in process.name():
+                return f'{process.cwd()}/cardano-node.socket'
+
+
+os.environ['CARDANO_NODE_SOCKET_PATH'] = GET_NODE_SOCKET_PATH()
+
+
 def get_UTXOs(address):
     url = f"https://cardano-mainnet.blockfrost.io/api/v0/addresses/{address}/utxos"
     headers = {
         'project_id': PROJECT_ID
     }
     return requests.request("GET", url, headers=headers).json()
+
+
+def query_tip():
+    query = subprocess.check_output([
+        CARDANO_CLI_PATH,
+        'query', 'tip',
+        '--mainnet',
+    ])
+    return query.decode()
 
 
 def calculate_min_fee(tx_in_count, tx_out_count, file_raw):
